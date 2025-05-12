@@ -26,7 +26,10 @@ jobs:
           cache: 'npm'
           
       - name: Install Dependencies
-        run: npm ci
+        run: |
+          npm ci
+          npm install -g typescript
+          npm install -g vite
         
       - name: Build
         run: |
@@ -34,6 +37,7 @@ jobs:
         env:
           CI: false
           NODE_ENV: production
+          PATH: ${{ env.PATH }}:/usr/local/bin
         
       - name: Deploy
         id: deploy
