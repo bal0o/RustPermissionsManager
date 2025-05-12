@@ -80,8 +80,17 @@ function App() {
               <Button
                 variant="outlined"
                 startIcon={<HelpIcon />}
-                onClick={() => window.open('https://github.com/yourusername/rust-permissions-manager/blob/main/README.md', '_blank')}
-                sx={{ color: '#3f51b5', borderColor: '#3f51b5' }}
+                href="https://github.com/bal0o/RustPermissionsManager/blob/main/README.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{ 
+                  borderColor: '#3f51b5', 
+                  color: '#3f51b5',
+                  '&:hover': {
+                    borderColor: '#1a237e',
+                    backgroundColor: 'rgba(63, 81, 181, 0.04)'
+                  }
+                }}
               >
                 Help
               </Button>
