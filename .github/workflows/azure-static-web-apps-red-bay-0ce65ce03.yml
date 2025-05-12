@@ -25,6 +25,13 @@ jobs:
           node-version: '18'
           cache: 'npm'
       
+      - name: Clean workspace
+        run: |
+          rm -rf node_modules
+          rm -rf dist
+          rm -rf .next
+          rm -rf .cache
+      
       - name: Install Dependencies
         run: npm ci
 
@@ -33,6 +40,14 @@ jobs:
         env:
           CI: false
           NODE_ENV: production
+      
+      - name: Clean dist directory
+        run: |
+          find dist -type f -name "*.map" -delete
+          find dist -type f -name "*.ts" -delete
+          find dist -type f -name "*.tsx" -delete
+          find dist -type f -name "*.jsx" -delete
+          find dist -type d -name "node_modules" -exec rm -rf {} +
       
       - name: Deploy
         id: deploy
