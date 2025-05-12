@@ -148,12 +148,14 @@ const ActionButtons = React.memo(({
   onShowExportScript,
   onShowConfig,
   onImportFile,
+  onNewConfig,
 }: {
   onExport: () => void;
   onShowImport: () => void;
   onShowExportScript: () => void;
   onShowConfig: () => void;
   onImportFile: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onNewConfig: () => void;
 }) => {
   return (
     <Stack direction="row" spacing={2} sx={{ mb: 2, flexWrap: 'wrap', gap: 1 }}>
@@ -200,6 +202,13 @@ const ActionButtons = React.memo(({
       >
         <SettingsIcon />
       </IconButton>
+      <Button 
+        variant="outlined" 
+        onClick={onNewConfig}
+        sx={{ bgcolor: 'white', borderColor: '#ff9800', color: '#ff9800', '&:hover': { borderColor: '#ef6c00', bgcolor: '#fff3e0' } }}
+      >
+        New Config
+      </Button>
     </Stack>
   );
 });
@@ -602,8 +611,51 @@ const PermissionsGrid = ({
   const handleImportFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setPendingFile(file);
+      if (permissions.length > 0) {
+        setPendingFile(file);
+        setShowConfirmDialog(true);
+      } else {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const text = e.target?.result as string;
+            const data = JSON.parse(text);
+            
+            // Validate the imported data structure
+            if (!data.permissions || !Array.isArray(data.permissions) || !data.groups || !Array.isArray(data.groups)) {
+              throw new Error('Invalid file format: missing permissions or groups arrays');
+            }
+
+            // Validate each permission has the required structure
+            const validPermissions = data.permissions.every((p: any) => 
+              typeof p === 'object' && 
+              typeof p.name === 'string' && 
+              Array.isArray(p.groups)
+            );
+
+            if (!validPermissions) {
+              throw new Error('Invalid file format: permissions must have name and groups array');
+            }
+
+            // Update the state with the imported data
+            onPermissionsChange(data.permissions);
+            onGroupsChange(data.groups);
+          } catch (error) {
+            console.error('Error parsing permissions file:', error);
+            // You might want to show an error message to the user here
+          }
+        };
+        reader.readAsText(file);
+      }
+    }
+  };
+
+  const handleNewConfig = () => {
+    if (permissions.length > 0) {
       setShowConfirmDialog(true);
+    } else {
+      onPermissionsChange([]);
+      onGroupsChange([]);
     }
   };
 
@@ -813,6 +865,7 @@ const PermissionsGrid = ({
         onShowExportScript={() => setShowExportScriptDialog(true)}
         onShowConfig={() => setShowConfig(true)}
         onImportFile={handleImportFile}
+        onNewConfig={handleNewConfig}
       />
       <InputFields 
         onAddGroup={handleAddGroup}
