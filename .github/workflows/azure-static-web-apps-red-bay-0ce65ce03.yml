@@ -60,6 +60,11 @@ jobs:
           
           # Remove any empty directories
           find dist -type d -empty -delete
+          
+          # Create zip file
+          cd dist
+          zip -r ../dist.zip .
+          cd ..
       
       - name: Debug - List deployment contents
         run: |
@@ -71,6 +76,8 @@ jobs:
           du -sh dist
           echo "=== All Files in Dist Directory ==="
           find dist -type f
+          echo "=== Zip File Size ==="
+          ls -lh dist.zip
       
       - name: Deploy
         id: deploy
@@ -87,6 +94,7 @@ jobs:
           deployment_environment: "Production"
           skip_app_build: true
           is_static_export: true
+          app_artifact_location: "dist.zip"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
