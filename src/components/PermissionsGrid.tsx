@@ -401,6 +401,8 @@ const PermissionsGrid = ({
   });
   const [exportScript, setExportScript] = useState('');
   const [showCopied, setShowCopied] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
 
   // Calculate dynamic header height (for rotated group names)
   const headerHeight = useMemo(() => {
@@ -600,6 +602,13 @@ const PermissionsGrid = ({
   const handleImportFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      setPendingFile(file);
+      setShowConfirmDialog(true);
+    }
+  };
+
+  const handleConfirmImportFile = () => {
+    if (pendingFile) {
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
@@ -630,8 +639,15 @@ const PermissionsGrid = ({
           // You might want to show an error message to the user here
         }
       };
-      reader.readAsText(file);
+      reader.readAsText(pendingFile);
     }
+    setShowConfirmDialog(false);
+    setPendingFile(null);
+  };
+
+  const handleCancelImportFile = () => {
+    setShowConfirmDialog(false);
+    setPendingFile(null);
   };
 
   const handleExportScript = () => {
@@ -918,6 +934,16 @@ const PermissionsGrid = ({
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowConfig(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={showConfirmDialog} onClose={handleCancelImportFile}>
+        <DialogTitle>Confirm Import</DialogTitle>
+        <DialogContent>
+          <Typography>Opening a new file will discard all unsaved changes. Do you want to continue?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelImportFile}>Cancel</Button>
+          <Button onClick={handleConfirmImportFile} variant="contained" color="primary">Confirm</Button>
         </DialogActions>
       </Dialog>
       <Snackbar
