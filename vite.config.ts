@@ -58,7 +58,7 @@ export default defineConfig({
         assetFileNames: 'assets/[name]-[hash].[ext]'
       },
     },
-    copyPublicDir: false,
+    copyPublicDir: true,
     sourcemap: false,
     lib: {
       entry: resolve(__dirname, 'index.html'),
