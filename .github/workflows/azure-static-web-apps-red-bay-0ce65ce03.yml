@@ -41,43 +41,18 @@ jobs:
           CI: false
           NODE_ENV: production
       
-      - name: Debug - List workspace contents
+      - name: Prepare deployment directory
         run: |
-          echo "=== Workspace Contents ==="
-          ls -la
-          echo "=== Node Modules Contents ==="
-          ls -la node_modules || echo "No node_modules found"
-          echo "=== Dist Contents ==="
-          ls -la dist || echo "No dist found"
-          echo "=== File Counts ==="
-          find . -type f | wc -l
-          echo "=== Dist File Counts ==="
-          find dist -type f | wc -l
-          echo "=== Node Modules File Counts ==="
-          find node_modules -type f | wc -l
+          mkdir -p deployment
+          cp -r dist/* deployment/
+          cp staticwebapp.config.json deployment/ || true
       
-      - name: Clean dist directory
+      - name: Debug - List deployment contents
         run: |
-          find dist -type f -name "*.map" -delete
-          find dist -type f -name "*.ts" -delete
-          find dist -type f -name "*.tsx" -delete
-          find dist -type f -name "*.jsx" -delete
-          find dist -type d -name "node_modules" -exec rm -rf {} +
-          # Remove any hidden files
-          find dist -type f -name ".*" -delete
-          # Remove any backup files
-          find dist -type f -name "*~" -delete
-          # Remove any temp files
-          find dist -type f -name "*.tmp" -delete
-          # Remove any log files
-          find dist -type f -name "*.log" -delete
-      
-      - name: Debug - List final dist contents
-        run: |
-          echo "=== Final Dist Contents ==="
-          ls -la dist
-          echo "=== Final Dist File Count ==="
-          find dist -type f | wc -l
+          echo "=== Deployment Directory Contents ==="
+          ls -la deployment
+          echo "=== Deployment File Count ==="
+          find deployment -type f | wc -l
       
       - name: Deploy
         id: deploy
@@ -86,9 +61,9 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "/"
-          output_location: "dist"
-          app_build_command: "npm run build"
+          app_location: "deployment"
+          output_location: ""
+          app_build_command: ""
           api_location: ""
           api_build_command: ""
           deployment_environment: "production"
