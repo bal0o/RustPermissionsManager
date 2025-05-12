@@ -212,12 +212,13 @@ const ActionButtons = React.memo(({
         Generate Script
       </Button>
       
-      <IconButton 
+      <Button 
+        variant="outlined" 
         onClick={onShowConfig}
         sx={{ bgcolor: 'white', color: '#9e9e9e', '&:hover': { bgcolor: '#f5f5f5', color: '#616161' } }}
       >
         <SettingsIcon />
-      </IconButton>
+      </Button>
     </Stack>
   );
 });
@@ -628,6 +629,8 @@ const PermissionsGrid = ({
       } else {
         processFile(file);
       }
+      // Reset the file input so the same file can be selected again
+      event.target.value = '';
     }
   };
 
