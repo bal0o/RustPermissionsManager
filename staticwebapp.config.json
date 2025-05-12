@@ -1,7 +1,7 @@
 {
   "buildProperties": {
     "appLocation": "/",
-    "outputLocation": "dist",
+    "outputLocation": "build",
     "appBuildCommand": "npm run build"
   },
   "routes": [

@@ -62,7 +62,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "deployment"
-          output_location: ""
+          output_location: "build"
           app_build_command: ""
           api_location: ""
           api_build_command: ""
