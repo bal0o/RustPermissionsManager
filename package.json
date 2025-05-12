@@ -6,32 +6,37 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@mui/base": "^5.0.0-beta.70",
-    "@mui/icons-material": "^5.11.16",
-    "@mui/material": "^7.1.0",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.10",
+    "@mui/material": "^5.15.10",
     "@tanstack/react-table": "^8.10.0",
     "@tanstack/react-virtual": "^3.13.8",
     "@types/react-window": "^1.8.8",
     "protobufjs": "^7.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-virtualized": "^9.22.6",
-    "react-window": "^1.8.11"
+    "react-virtualized": "^9.22.5",
+    "react-window": "^1.8.10"
   },
   "devDependencies": {
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "@types/react-virtualized": "^9.22.2",
-    "@vitejs/plugin-react": "^4.0.0",
-    "typescript": "^5.0.4",
-    "vite": "^4.3.5"
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "@types/react-virtualized": "^9.21.25",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.0"
   }
 }
