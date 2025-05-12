@@ -47,8 +47,15 @@ jobs:
       - name: Prepare deployment directory
         run: |
           mkdir -p build
+          # Copy only necessary files
           cp -r dist/* build/
           cp staticwebapp.config.json build/
+          # Remove any unnecessary files
+          find build -type f -name "*.map" -delete
+          find build -type f -name "*.ts" -delete
+          find build -type f -name "*.tsx" -delete
+          find build -type f -name "*.test.*" -delete
+          find build -type f -name "*.spec.*" -delete
       
       - name: Debug - List deployment contents
         run: |
@@ -56,6 +63,8 @@ jobs:
           ls -la build
           echo "=== Build File Count ==="
           find build -type f | wc -l
+          echo "=== Build Directory Size ==="
+          du -sh build
       
       - name: Deploy
         id: deploy
