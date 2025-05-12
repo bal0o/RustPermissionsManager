@@ -26,13 +26,11 @@ jobs:
           cache: 'npm'
           
       - name: Install Dependencies
-        run: |
-          npm ci
-          chmod +x ./node_modules/.bin/tsc
-          chmod +x ./node_modules/.bin/vite
+        run: npm ci
         
       - name: Build
-        run: npm run build
+        run: |
+          npm run build
         env:
           CI: false
           NODE_ENV: production
