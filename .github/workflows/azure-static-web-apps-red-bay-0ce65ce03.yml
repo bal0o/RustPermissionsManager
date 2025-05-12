@@ -28,8 +28,14 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: List vite permissions before chmod
+        run: ls -l node_modules/.bin/vite || true
+
       - name: Fix vite permissions
         run: chmod +x node_modules/.bin/vite
+
+      - name: List vite permissions after chmod
+        run: ls -l node_modules/.bin/vite || true
 
       - name: Build
         run: npm run build
