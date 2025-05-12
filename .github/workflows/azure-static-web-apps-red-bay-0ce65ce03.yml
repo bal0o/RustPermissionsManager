@@ -41,6 +41,21 @@ jobs:
           CI: false
           NODE_ENV: production
       
+      - name: Debug - List workspace contents
+        run: |
+          echo "=== Workspace Contents ==="
+          ls -la
+          echo "=== Node Modules Contents ==="
+          ls -la node_modules || echo "No node_modules found"
+          echo "=== Dist Contents ==="
+          ls -la dist || echo "No dist found"
+          echo "=== File Counts ==="
+          find . -type f | wc -l
+          echo "=== Dist File Counts ==="
+          find dist -type f | wc -l
+          echo "=== Node Modules File Counts ==="
+          find node_modules -type f | wc -l
+      
       - name: Clean dist directory
         run: |
           find dist -type f -name "*.map" -delete
@@ -48,6 +63,21 @@ jobs:
           find dist -type f -name "*.tsx" -delete
           find dist -type f -name "*.jsx" -delete
           find dist -type d -name "node_modules" -exec rm -rf {} +
+          # Remove any hidden files
+          find dist -type f -name ".*" -delete
+          # Remove any backup files
+          find dist -type f -name "*~" -delete
+          # Remove any temp files
+          find dist -type f -name "*.tmp" -delete
+          # Remove any log files
+          find dist -type f -name "*.log" -delete
+      
+      - name: Debug - List final dist contents
+        run: |
+          echo "=== Final Dist Contents ==="
+          ls -la dist
+          echo "=== Final Dist File Count ==="
+          find dist -type f | wc -l
       
       - name: Deploy
         id: deploy
