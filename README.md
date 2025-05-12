@@ -19,10 +19,15 @@ This tool is designed to work seamlessly with the Rust permissions system. The R
 
 ### Plugin Options
 
-- **Server Type**: Choose between Oxide and Carbon.
-- **Command Prefix**: Set the command prefix for your server (e.g., `oxide.` or `c.`).
-- **Create Groups**: Option to automatically create groups if they don't exist.
-- **Revoke Before Grant**: Option to revoke permissions before granting them to ensure a clean state.
+- **Apply on startup**: Automatically apply permissions when the server starts (default: false)
+- **Apply on map wipe**: Automatically apply permissions after a map wipe (default: true)
+- **Remove existing permissions before applying**: Cleans up existing permissions before applying new ones (default: true)
+- **Create groups if they don't exist**: Automatically creates groups that don't exist on the server (default: true)
+- **Permission required to use sync command**: Permission node required to use the sync command (default: "permissionssync.admin")
+
+### Commands
+
+- `syncperms` - Manually trigger permission synchronization (requires permission: permissionssync.admin)
 
 ### Download the Plugin
 
