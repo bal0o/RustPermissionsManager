@@ -32,7 +32,7 @@ This tool is designed to work seamlessly with the Rust permissions system. The R
 ### Download the Plugin
 
 You can download the Rust plugin from the following link:
-[Download Rust Permissions Plugin](https://github.com/bal0o/RustPermissionsManager/releases/latest)
+[Download Rust Permissions Plugin](https://github.com/bal0o/RustPermissionsManager/raw/main/releases/PermissionsSync.cs)
 
 ## Contributing
 
