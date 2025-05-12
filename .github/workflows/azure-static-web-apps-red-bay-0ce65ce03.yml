@@ -14,117 +14,34 @@ jobs:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
-    environment:
-      name: Production
-      url: ${{ steps.deploy.outputs.static_web_app_url }}
     steps:
       - uses: actions/checkout@v3
-        with:
-          submodules: true
       
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'npm'
-      
-      - name: Clean workspace
-        run: |
-          rm -rf node_modules
-          rm -rf dist
-          rm -rf .next
-          rm -rf .cache
       
       - name: Install Dependencies
         run: npm ci
-
+      
       - name: Build
-        run: |
-          # Create a temporary vite config for production build
-          cat > vite.config.prod.js << 'EOL'
-          import { defineConfig } from 'vite'
-          import react from '@vitejs/plugin-react'
-
-          export default defineConfig({
-            plugins: [react()],
-            build: {
-              rollupOptions: {
-                output: {
-                  manualChunks: {
-                    vendor: ['react', 'react-dom'],
-                    ui: ['@mui/material', '@mui/icons-material'],
-                  }
-                }
-              },
-              chunkSizeWarningLimit: 1000,
-              minify: 'terser',
-              terserOptions: {
-                compress: {
-                  drop_console: true,
-                  drop_debugger: true
-                }
-              }
-            }
-          })
-          EOL
-
-          # Run the build with the production config
-          NODE_ENV=production npm run build -- --config vite.config.prod.js
+        run: npm run build
         env:
           CI: false
           NODE_ENV: production
       
-      - name: Prepare deployment
-        run: |
-          # Copy config file to dist
-          cp staticwebapp.config.json dist/
-          
-          # Remove any unnecessary files
-          find dist -type f -name "*.map" -delete
-          find dist -type f -name "*.ts" -delete
-          find dist -type f -name "*.tsx" -delete
-          find dist -type f -name "*.test.*" -delete
-          find dist -type f -name "*.spec.*" -delete
-          find dist -type f -name ".*" -delete
-          find dist -type d -name ".*" -exec rm -rf {} +
-          
-          # Remove any empty directories
-          find dist -type d -empty -delete
-          
-          # Create zip file
-          cd dist
-          zip -r ../dist.zip .
-          cd ..
-      
-      - name: Debug - List deployment contents
-        run: |
-          echo "=== Dist Directory Contents ==="
-          ls -la dist
-          echo "=== Dist File Count ==="
-          find dist -type f | wc -l
-          echo "=== Dist Directory Size ==="
-          du -sh dist
-          echo "=== All Files in Dist Directory ==="
-          find dist -type f
-          echo "=== Zip File Size ==="
-          ls -lh dist.zip
-      
       - name: Deploy
-        id: deploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "/"
           output_location: "dist"
           app_build_command: "npm run build"
-          api_location: ""
-          api_build_command: ""
-          deployment_environment: "Production"
           skip_app_build: true
           is_static_export: true
-          app_artifact_location: "dist.zip"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -132,7 +49,6 @@ jobs:
     name: Close Pull Request Job
     steps:
       - name: Close Pull Request
-        id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
