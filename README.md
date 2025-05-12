@@ -1,62 +1,38 @@
-<<<<<<< HEAD
 # Rust Permissions Manager
 
-A web-based tool for managing Rust server permissions. This tool allows you to:
-- Import and export permission configurations
-- Manage permission groups
-- Generate permission scripts for Carbon and Oxide servers
-- Copy scripts to clipboard for manual execution
+A web-based tool for managing permissions for Rust servers. This tool allows you to easily configure and manage permissions for your Rust server using a user-friendly interface.
+
+## Live Demo
+
+You can use the live version of the app at [https://rust-permissions-manager.azurewebsites.net](https://rust-permissions-manager.azurewebsites.net).
 
 ## Features
 
-- Import permissions from server output
-- Export permissions to JSON
-- Generate permission scripts for Carbon and Oxide servers
-- Support for creating groups and revoking permissions
-- Modern, responsive UI with Material Design
-- Real-time permission management
-- Copy scripts to clipboard for manual execution
+- **User-Friendly Interface**: Easily manage permissions and groups with a modern, intuitive UI.
+- **Import/Export**: Import existing permissions from your server or export your configuration for backup.
+- **Generate Scripts**: Automatically generate server commands for applying permissions.
+- **Customizable Settings**: Configure server type (Oxide/Carbon) and command prefixes.
 
-## Development
+## Rust Plugin
 
-1. Install dependencies:
-```bash
-npm install
-```
+This tool is designed to work seamlessly with the Rust permissions system. The Rust plugin is a key part of the overall solution, providing the necessary backend functionality to apply permissions on your server.
 
-2. Start the development server:
-```bash
-npm run dev
-```
+### Plugin Options
 
-3. Build for production:
-```bash
-npm run build
-```
+- **Server Type**: Choose between Oxide and Carbon.
+- **Command Prefix**: Set the command prefix for your server (e.g., `oxide.` or `c.`).
+- **Create Groups**: Option to automatically create groups if they don't exist.
+- **Revoke Before Grant**: Option to revoke permissions before granting them to ensure a clean state.
 
-## Usage
+### Download the Plugin
 
-1. Start the application using `npm run dev`
-2. Open your browser to `http://localhost:3000`
-3. Use the interface to:
-   - Import existing permissions
-   - Add/remove groups
-   - Add/remove permissions
-   - Generate scripts
-   - Copy scripts to clipboard
+You can download the Rust plugin from the following link:
+[Download Rust Permissions Plugin](https://github.com/bal0o/RustPermissionsManager/releases/latest)
 
-## Script Generation
+## Contributing
 
-The tool can generate permission scripts for both Carbon and Oxide servers. When generating a script, you can:
-
-- Choose between Carbon and Oxide server types
-- Optionally create groups if they don't exist
-- Optionally revoke all permissions before granting new ones
-- Copy the generated script to clipboard for manual execution
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-ISC 
-=======
-# RustPermissionsManager
->>>>>>> 8e9cc6d4571c10c88e726d760d22f85136db6eef
+This project is licensed under the MIT License - see the LICENSE file for details.
