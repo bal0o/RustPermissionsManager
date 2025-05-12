@@ -16,6 +16,7 @@ const flowPlugin = {
 }
 
 export default defineConfig({
+  base: '/',
   plugins: [react(), flowPlugin],
   server: {
     port: 3000
@@ -59,12 +60,7 @@ export default defineConfig({
       },
     },
     copyPublicDir: true,
-    sourcemap: false,
-    lib: {
-      entry: resolve(__dirname, 'index.html'),
-      formats: ['es'],
-      fileName: () => 'index.html'
-    }
+    sourcemap: false
   },
   optimizeDeps: {
     include: [
