@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Rust Permissions Manager
 
 A web-based tool for managing Rust server permissions. This tool allows you to:
@@ -56,3 +57,6 @@ The tool can generate permission scripts for both Carbon and Oxide servers. When
 ## License
 
 ISC 
+=======
+# RustPermissionsManager
+>>>>>>> 8e9cc6d4571c10c88e726d760d22f85136db6eef
