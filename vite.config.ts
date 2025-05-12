@@ -17,10 +17,31 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     sourcemap: true,
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
       },
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'mui-vendor': ['@mui/material', '@mui/icons-material'],
+          'table-vendor': ['@tanstack/react-table', '@tanstack/react-virtual'],
+          'virtualized-vendor': ['react-virtualized', 'react-window'],
+        },
+      },
     },
-  }
+  },
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      '@mui/material',
+      '@mui/icons-material',
+      '@tanstack/react-table',
+      '@tanstack/react-virtual',
+      'react-virtualized',
+      'react-window',
+    ],
+  },
 }) 
