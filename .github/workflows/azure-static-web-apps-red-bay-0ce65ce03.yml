@@ -49,10 +49,11 @@ jobs:
         run: |
           # Create a clean build directory
           rm -rf build
-          mkdir -p build
+          mkdir -p build/assets
           
           # Copy only the essential files
-          cp -r dist/* build/
+          cp dist/index.html build/
+          cp dist/assets/* build/assets/
           cp staticwebapp.config.json build/
           
           # Remove any unnecessary files and hidden files
@@ -93,6 +94,7 @@ jobs:
           deployment_environment: "Production"
           skip_app_build: true
           is_static_export: true
+          app_artifact_location: "build"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
