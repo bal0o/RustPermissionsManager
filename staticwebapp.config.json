@@ -23,7 +23,7 @@
   },
   "globalHeaders": {
     "cache-control": "no-cache",
-    "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:;"
+    "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://cdn.buymeacoffee.com; font-src 'self' data:;"
   },
   "responseOverrides": {
     "404": {
