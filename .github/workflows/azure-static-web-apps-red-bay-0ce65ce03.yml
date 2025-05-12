@@ -82,6 +82,7 @@ jobs:
         uses: Azure/static-web-apps-deploy@v1
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
+          deployment_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           action: "upload"
           app_location: "/"
           output_location: "build"
@@ -102,4 +103,5 @@ jobs:
         id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
+          deployment_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           action: "close"
