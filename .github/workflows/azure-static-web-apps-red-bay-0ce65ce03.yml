@@ -22,6 +22,13 @@ jobs:
         with:
           node-version: '18'
       
+      - name: Clean workspace
+        run: |
+          rm -rf node_modules
+          rm -rf dist
+          rm -rf .next
+          rm -rf .cache
+      
       - name: Install Dependencies
         run: npm ci
       
@@ -30,6 +37,27 @@ jobs:
         env:
           CI: false
           NODE_ENV: production
+      
+      - name: Prepare deployment
+        run: |
+          # Copy config file
+          cp staticwebapp.config.json dist/
+          
+          # Debug output
+          echo "=== Dist Directory Contents ==="
+          ls -la dist
+          echo "=== Dist File Count ==="
+          find dist -type f | wc -l
+          echo "=== Dist Directory Size ==="
+          du -sh dist
+          echo "=== All Files in Dist Directory ==="
+          find dist -type f
+          echo "=== Node Modules in Dist ==="
+          find dist -name "node_modules" -type d
+          echo "=== Hidden Files in Dist ==="
+          find dist -name ".*" -type f
+          echo "=== Hidden Directories in Dist ==="
+          find dist -name ".*" -type d
       
       - name: Deploy
         uses: Azure/static-web-apps-deploy@v1
