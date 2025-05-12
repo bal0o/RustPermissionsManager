@@ -34,7 +34,6 @@ jobs:
           rm -rf dist
           rm -rf .next
           rm -rf .cache
-          rm -rf build
       
       - name: Install Dependencies
         run: npm ci
@@ -45,39 +44,33 @@ jobs:
           CI: false
           NODE_ENV: production
       
-      - name: Prepare deployment directory
+      - name: Prepare deployment
         run: |
-          # Create a clean build directory
-          rm -rf build
-          mkdir -p build/assets
+          # Copy config file to dist
+          cp staticwebapp.config.json dist/
           
-          # Copy only the essential files
-          cp dist/index.html build/
-          cp dist/assets/* build/assets/
-          cp staticwebapp.config.json build/
-          
-          # Remove any unnecessary files and hidden files
-          find build -type f -name "*.map" -delete
-          find build -type f -name "*.ts" -delete
-          find build -type f -name "*.tsx" -delete
-          find build -type f -name "*.test.*" -delete
-          find build -type f -name "*.spec.*" -delete
-          find build -type f -name ".*" -delete
-          find build -type d -name ".*" -exec rm -rf {} +
+          # Remove any unnecessary files
+          find dist -type f -name "*.map" -delete
+          find dist -type f -name "*.ts" -delete
+          find dist -type f -name "*.tsx" -delete
+          find dist -type f -name "*.test.*" -delete
+          find dist -type f -name "*.spec.*" -delete
+          find dist -type f -name ".*" -delete
+          find dist -type d -name ".*" -exec rm -rf {} +
           
           # Remove any empty directories
-          find build -type d -empty -delete
+          find dist -type d -empty -delete
       
       - name: Debug - List deployment contents
         run: |
-          echo "=== Build Directory Contents ==="
-          ls -la build
-          echo "=== Build File Count ==="
-          find build -type f | wc -l
-          echo "=== Build Directory Size ==="
-          du -sh build
-          echo "=== All Files in Build Directory ==="
-          find build -type f
+          echo "=== Dist Directory Contents ==="
+          ls -la dist
+          echo "=== Dist File Count ==="
+          find dist -type f | wc -l
+          echo "=== Dist Directory Size ==="
+          du -sh dist
+          echo "=== All Files in Dist Directory ==="
+          find dist -type f
       
       - name: Deploy
         id: deploy
@@ -87,14 +80,13 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           action: "upload"
           app_location: "/"
-          output_location: "build"
+          output_location: "dist"
           app_build_command: "npm run build"
           api_location: ""
           api_build_command: ""
           deployment_environment: "Production"
           skip_app_build: true
           is_static_export: true
-          app_artifact_location: "build"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
