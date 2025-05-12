@@ -2,8 +2,21 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 
+// Plugin to handle Flow directives
+const flowPlugin = {
+  name: 'flow-directive-handler',
+  transform(code, id) {
+    if (id.includes('react-virtualized')) {
+      return {
+        code: code.replace(/\/\/\s*@flow.*$/gm, ''),
+        map: null
+      }
+    }
+  }
+}
+
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), flowPlugin],
   server: {
     port: 3000
   },

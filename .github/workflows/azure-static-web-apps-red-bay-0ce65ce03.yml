@@ -51,6 +51,7 @@ jobs:
           api_build_command: ""
           app_artifact_location: "dist"
           deployment_environment: "production"
+          skip_app_build: true
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
