@@ -46,16 +46,25 @@ jobs:
       
       - name: Prepare deployment directory
         run: |
+          # Create a clean build directory
+          rm -rf build
           mkdir -p build
-          # Copy only necessary files
+          
+          # Copy only the essential files
           cp -r dist/* build/
           cp staticwebapp.config.json build/
+          
           # Remove any unnecessary files
           find build -type f -name "*.map" -delete
           find build -type f -name "*.ts" -delete
           find build -type f -name "*.tsx" -delete
           find build -type f -name "*.test.*" -delete
           find build -type f -name "*.spec.*" -delete
+          
+          # Create a zip file of the build directory
+          cd build
+          zip -r ../build.zip .
+          cd ..
       
       - name: Debug - List deployment contents
         run: |
@@ -65,6 +74,8 @@ jobs:
           find build -type f | wc -l
           echo "=== Build Directory Size ==="
           du -sh build
+          echo "=== Zip File Size ==="
+          ls -lh build.zip
       
       - name: Deploy
         id: deploy
@@ -81,6 +92,7 @@ jobs:
           deployment_environment: "Production"
           skip_app_build: true
           is_static_export: true
+          app_artifact_location: "build.zip"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
