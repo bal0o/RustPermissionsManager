@@ -46,16 +46,16 @@ jobs:
       
       - name: Prepare deployment directory
         run: |
-          mkdir -p deployment
-          cp -r dist/* deployment/
-          cp staticwebapp.config.json deployment/ || true
+          mkdir -p build
+          cp -r dist/* build/
+          cp staticwebapp.config.json build/
       
       - name: Debug - List deployment contents
         run: |
-          echo "=== Deployment Directory Contents ==="
-          ls -la deployment
-          echo "=== Deployment File Count ==="
-          find deployment -type f | wc -l
+          echo "=== Build Directory Contents ==="
+          ls -la build
+          echo "=== Build File Count ==="
+          find build -type f | wc -l
       
       - name: Deploy
         id: deploy
@@ -64,9 +64,9 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "deployment"
+          app_location: "/"
           output_location: "build"
-          app_build_command: ""
+          app_build_command: "npm run build"
           api_location: ""
           api_build_command: ""
           deployment_environment: "Production"
