@@ -26,14 +26,13 @@ jobs:
           cache: 'npm'
           
       - name: Install Dependencies
-        run: |
-          npm ci
-          npm install -g typescript
-          npm install -g vite
-        
+        run: npm install
+
+      - name: Fix vite permissions
+        run: chmod +x node_modules/.bin/vite
+
       - name: Build
-        run: |
-          npm run build
+        run: npm run build
         env:
           CI: false
           NODE_ENV: production
