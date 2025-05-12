@@ -61,6 +61,13 @@ jobs:
           find dist -name ".*" -type f
           echo "=== Hidden Directories in Dist ==="
           find dist -name ".*" -type d
+          
+          # Create zip file
+          cd dist
+          zip -r ../dist.zip .
+          cd ..
+          echo "=== Zip File Size ==="
+          ls -lh dist.zip
       
       - name: Deploy
         id: deploy
@@ -70,7 +77,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "/"
-          app_artifact_location: "dist"
+          app_artifact_location: "dist.zip"
           app_build_command: "npm run build"
           skip_app_build: true
           is_static_export: true
