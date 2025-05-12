@@ -24,19 +24,16 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          
+      
       - name: Install Dependencies
-        run: |
-          npm install
-          npm install -g vite
+        run: npm ci
 
       - name: Build
-        run: |
-          node ./node_modules/vite/bin/vite.js build
+        run: npm run build
         env:
           CI: false
           NODE_ENV: production
-        
+      
       - name: Deploy
         id: deploy
         uses: Azure/static-web-apps-deploy@v1
@@ -46,10 +43,9 @@ jobs:
           action: "upload"
           app_location: "/"
           output_location: "dist"
-          app_build_command: "node ./node_modules/vite/bin/vite.js build"
+          app_build_command: "npm run build"
           api_location: ""
           api_build_command: ""
-          app_artifact_location: "dist"
           deployment_environment: "production"
           skip_app_build: true
 
