@@ -1,43 +1,49 @@
 # Rust Permissions Manager
 
-A web-based tool for managing permissions for Rust servers. This tool allows you to easily configure and manage permissions for your Rust server using a user-friendly interface.
+A modern, efficient permissions management system built with Rust and React.
 
 ## Live Demo
 
-You can use the live version of the app at [https://rust-permissions-manager.azurewebsites.net](https://rust-permissions-manager.azurewebsites.net).
+Visit the live demo at [https://rustpermsmanager.thelms.co.uk](https://rustpermsmanager.thelms.co.uk).
 
 ## Features
 
-- **User-Friendly Interface**: Easily manage permissions and groups with a modern, intuitive UI.
-- **Import/Export**: Import existing permissions from your server or export your configuration for backup.
-- **Generate Scripts**: Automatically generate server commands for applying permissions.
-- **Customizable Settings**: Configure server type (Oxide/Carbon) and command prefixes.
+- User-friendly interface
+- Role-based access control
+- Real-time updates
+- Secure authentication
 
-## Rust Plugin
+## Getting Started
 
-This tool is designed to work seamlessly with the Rust permissions system. The Rust plugin is a key part of the overall solution, providing the necessary backend functionality to apply permissions on your server.
+### Prerequisites
 
-### Plugin Options
+- Node.js (v18 or later)
+- npm (v10 or later)
 
-- **Apply on startup**: Automatically apply permissions when the server starts (default: false)
-- **Apply on map wipe**: Automatically apply permissions after a map wipe (default: true)
-- **Remove existing permissions before applying**: Cleans up existing permissions before applying new ones (default: true)
-- **Create groups if they don't exist**: Automatically creates groups that don't exist on the server (default: true)
-- **Permission required to use sync command**: Permission node required to use the sync command (default: "permissionssync.admin")
+### Installation
 
-### Commands
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/bal0o/RustPermissionsManager.git
+   cd RustPermissionsManager
+   ```
 
-- `syncperms` - Manually trigger permission synchronization (requires permission: permissionssync.admin)
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-### Download the Plugin
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-You can download the Rust plugin from the following link:
-[Download Rust Permissions Plugin](https://github.com/bal0o/RustPermissionsManager/raw/main/releases/PermissionsSync.cs)
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Contributing
+## Deployment
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+This project is automatically deployed to Azure Static Web Apps. The deployment workflow is configured in `.github/workflows/azure-static-web-apps-salmon-sky-05253da03.yml`.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
