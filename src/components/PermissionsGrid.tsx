@@ -157,21 +157,37 @@ const ActionButtons = React.memo(({
   onImportFile: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onNewConfig: () => void;
 }) => {
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleOpenFileClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   return (
     <Stack direction="row" spacing={2} sx={{ mb: 2, flexWrap: 'wrap', gap: 1 }}>
       <Button 
         variant="outlined" 
-        component="label"
+        onClick={onNewConfig}
+        sx={{ bgcolor: 'white', borderColor: '#4caf50', color: '#4caf50', '&:hover': { borderColor: '#2e7d32', bgcolor: '#f1f8e9' } }}
+      >
+        New Config
+      </Button>
+      <Button 
+        variant="outlined" 
+        onClick={handleOpenFileClick}
         sx={{ bgcolor: 'white', borderColor: '#4caf50', color: '#4caf50', '&:hover': { borderColor: '#2e7d32', bgcolor: '#f1f8e9' } }}
       >
         Open File
-        <input
-          type="file"
-          hidden
-          accept=".json"
-          onChange={onImportFile}
-        />
       </Button>
+      <input
+        type="file"
+        hidden
+        ref={fileInputRef}
+        accept=".json"
+        onChange={onImportFile}
+      />
       <Button 
         variant="outlined" 
         onClick={onExport}
@@ -202,13 +218,6 @@ const ActionButtons = React.memo(({
       >
         <SettingsIcon />
       </IconButton>
-      <Button 
-        variant="outlined" 
-        onClick={onNewConfig}
-        sx={{ bgcolor: 'white', borderColor: '#ff9800', color: '#ff9800', '&:hover': { borderColor: '#ef6c00', bgcolor: '#fff3e0' } }}
-      >
-        New Config
-      </Button>
     </Stack>
   );
 });
@@ -412,6 +421,7 @@ const PermissionsGrid = ({
   const [showCopied, setShowCopied] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [confirmDialogType, setConfirmDialogType] = useState<'import' | 'new'>('import');
 
   // Calculate dynamic header height (for rotated group names)
   const headerHeight = useMemo(() => {
@@ -613,45 +623,55 @@ const PermissionsGrid = ({
     if (file) {
       if (permissions.length > 0) {
         setPendingFile(file);
+        setConfirmDialogType('import');
         setShowConfirmDialog(true);
       } else {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          try {
-            const text = e.target?.result as string;
-            const data = JSON.parse(text);
-            
-            // Validate the imported data structure
-            if (!data.permissions || !Array.isArray(data.permissions) || !data.groups || !Array.isArray(data.groups)) {
-              throw new Error('Invalid file format: missing permissions or groups arrays');
-            }
-
-            // Validate each permission has the required structure
-            const validPermissions = data.permissions.every((p: any) => 
-              typeof p === 'object' && 
-              typeof p.name === 'string' && 
-              Array.isArray(p.groups)
-            );
-
-            if (!validPermissions) {
-              throw new Error('Invalid file format: permissions must have name and groups array');
-            }
-
-            // Update the state with the imported data
-            onPermissionsChange(data.permissions);
-            onGroupsChange(data.groups);
-          } catch (error) {
-            console.error('Error parsing permissions file:', error);
-            // You might want to show an error message to the user here
-          }
-        };
-        reader.readAsText(file);
+        processFile(file);
       }
     }
   };
 
+  const processFile = (file: File) => {
+    console.log('File selected:', file.name);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target?.result as string;
+        console.log('File content:', text);
+        const data = JSON.parse(text);
+        
+        // Validate the imported data structure
+        if (!data.permissions || !Array.isArray(data.permissions) || !data.groups || !Array.isArray(data.groups)) {
+          throw new Error('Invalid file format: missing permissions or groups arrays');
+        }
+
+        // Validate each permission has the required structure
+        const validPermissions = data.permissions.every((p: any) => 
+          typeof p === 'object' && 
+          typeof p.name === 'string' && 
+          Array.isArray(p.groups)
+        );
+
+        if (!validPermissions) {
+          throw new Error('Invalid file format: permissions must have name and groups array');
+        }
+
+        // Update the state with the imported data
+        console.log('Updating state with:', data);
+        onPermissionsChange(data.permissions);
+        onGroupsChange(data.groups);
+        console.log('State updated with permissions:', data.permissions.length, 'and groups:', data.groups.length);
+      } catch (error) {
+        console.error('Error parsing permissions file:', error);
+        // You might want to show an error message to the user here
+      }
+    };
+    reader.readAsText(file);
+  };
+
   const handleNewConfig = () => {
     if (permissions.length > 0) {
+      setConfirmDialogType('new');
       setShowConfirmDialog(true);
     } else {
       onPermissionsChange([]);
@@ -659,45 +679,18 @@ const PermissionsGrid = ({
     }
   };
 
-  const handleConfirmImportFile = () => {
-    if (pendingFile) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const text = e.target?.result as string;
-          const data = JSON.parse(text);
-          
-          // Validate the imported data structure
-          if (!data.permissions || !Array.isArray(data.permissions) || !data.groups || !Array.isArray(data.groups)) {
-            throw new Error('Invalid file format: missing permissions or groups arrays');
-          }
-
-          // Validate each permission has the required structure
-          const validPermissions = data.permissions.every((p: any) => 
-            typeof p === 'object' && 
-            typeof p.name === 'string' && 
-            Array.isArray(p.groups)
-          );
-
-          if (!validPermissions) {
-            throw new Error('Invalid file format: permissions must have name and groups array');
-          }
-
-          // Update the state with the imported data
-          onPermissionsChange(data.permissions);
-          onGroupsChange(data.groups);
-        } catch (error) {
-          console.error('Error parsing permissions file:', error);
-          // You might want to show an error message to the user here
-        }
-      };
-      reader.readAsText(pendingFile);
+  const handleConfirmAction = () => {
+    if (confirmDialogType === 'import' && pendingFile) {
+      processFile(pendingFile);
+    } else if (confirmDialogType === 'new') {
+      onPermissionsChange([]);
+      onGroupsChange([]);
     }
     setShowConfirmDialog(false);
     setPendingFile(null);
   };
 
-  const handleCancelImportFile = () => {
+  const handleCancelAction = () => {
     setShowConfirmDialog(false);
     setPendingFile(null);
   };
@@ -989,14 +982,18 @@ const PermissionsGrid = ({
           <Button onClick={() => setShowConfig(false)}>Close</Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={showConfirmDialog} onClose={handleCancelImportFile}>
-        <DialogTitle>Confirm Import</DialogTitle>
+      <Dialog open={showConfirmDialog} onClose={handleCancelAction}>
+        <DialogTitle>Confirm Action</DialogTitle>
         <DialogContent>
-          <Typography>Opening a new file will discard all unsaved changes. Do you want to continue?</Typography>
+          <Typography>
+            {confirmDialogType === 'import' 
+              ? 'Opening a new file will discard all unsaved changes. Do you want to continue?'
+              : 'Creating a new config will discard all unsaved changes. Do you want to continue?'}
+          </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelImportFile}>Cancel</Button>
-          <Button onClick={handleConfirmImportFile} variant="contained" color="primary">Confirm</Button>
+          <Button onClick={handleCancelAction}>Cancel</Button>
+          <Button onClick={handleConfirmAction} variant="contained" color="primary">Confirm</Button>
         </DialogActions>
       </Dialog>
       <Snackbar
