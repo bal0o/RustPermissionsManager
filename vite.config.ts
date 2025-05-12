@@ -56,5 +56,11 @@ export default defineConfig({
       'react-virtualized',
       'react-window',
     ],
+    esbuildOptions: {
+      target: 'es2020',
+      supported: {
+        'top-level-await': true
+      },
+    }
   },
 }) 
