@@ -486,6 +486,12 @@ const PermissionsGrid = ({
     );
   }, [permissions, permissionGroupsMap, onPermissionsChange]);
 
+  // Add this handler to remove a permission
+  const handleDeletePermission = useCallback((permissionName: string) => {
+    const updated = permissions.filter(p => p.name !== permissionName);
+    onPermissionsChange(updated);
+  }, [permissions, onPermissionsChange]);
+
   // Optimize the cell renderer
   const cellRenderer = useCallback(({ columnIndex, key, rowIndex, style }: any) => {
     const permission = sortedPermissions[rowIndex];
@@ -512,6 +518,7 @@ const PermissionsGrid = ({
         </div>
       );
     } else if (columnIndex === groups.length + 1) {
+      // Actions column: add delete button for permission
       return (
         <div key={key} style={{
           ...style,
@@ -522,9 +529,9 @@ const PermissionsGrid = ({
           borderRight: '1px solid #e0e0ff',
           background: baseBg,
         }}>
-          <IconButton 
-            size="small" 
-            onClick={() => handleTogglePermission(permission, groups[columnIndex - 1])}
+          <IconButton
+            size="small"
+            onClick={() => handleDeletePermission(permission.name)}
             sx={{ color: '#f44336' }}
           >
             <DeleteIcon fontSize="small" />
@@ -559,7 +566,7 @@ const PermissionsGrid = ({
         </div>
       );
     }
-  }, [sortedPermissions, groups, permissionGroupsMap, handleTogglePermission]);
+  }, [sortedPermissions, groups, permissionGroupsMap, handleTogglePermission, handleDeletePermission]);
 
   // Memoize grid dimensions
   const gridDimensions = useMemo(() => {
