@@ -29,8 +29,9 @@ namespace Oxide.Plugins
             [JsonProperty("Create groups if they don't exist")]
             public bool CreateMissingGroups { get; set; } = true;
 
-            [JsonProperty("Permission required to use sync command")]
-            public string SyncPermission { get; set; } = "permissionssync.admin";
+            [JsonProperty("Startup delay (seconds)")]
+            public float StartupDelay { get; set; } = 300f;
+
         }
 
         protected override void LoadConfig()
@@ -60,13 +61,12 @@ namespace Oxide.Plugins
         #region Oxide Hooks
         private void Init()
         {
-            permission.RegisterPermission(config.SyncPermission, this);
             cmd.AddConsoleCommand("syncperms", this, "CmdSyncPermissions");
             
             if (config.ApplyOnStartup)
             {
-                // Delay for 5 minutes to ensure all plugins have loaded
-                timer.Once(300f, () => ApplyPermissions());
+                // Delay to ensure all plugins have loaded
+                timer.Once(config.StartupDelay, () => ApplyPermissions());
             }
         }
 
