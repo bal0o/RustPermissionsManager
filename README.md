@@ -132,4 +132,5 @@ If you encounter any issues or have questions, please report them on the plugin'
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+- This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+- You are free to share and adapt the code for non-commercial purposes, as long as you provide attribution and distribute your contributions under the same license.
