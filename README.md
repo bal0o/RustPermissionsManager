@@ -4,7 +4,7 @@ A modern, efficient permissions management system built with Rust and React, des
 
 ## Live App
 
-Visit the live app at [https://rustpermsmanager.thelms.co.uk](https://rustpermsmanager.thelms.co.uk).
+Visit the live app at [https://rustperms.thelms.co.uk](https://rustperms.thelms.co.uk).
 
 ## Features
 
