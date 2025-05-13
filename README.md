@@ -132,5 +132,5 @@ If you encounter any issues or have questions, please report them on the plugin'
 
 ## License
 
-- This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/).
-- You are free to share and adapt the code for non-commercial purposes, as long as you provide attribution and distribute your contributions under the same license.
+- This project is licensed under the [GNU General Public License v3.0 (GPL-3.0)](https://www.gnu.org/licenses/gpl-3.0.en.html).
+- You are free to share and adapt the code, as long as you provide attribution and distribute your contributions under the same license.
