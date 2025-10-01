@@ -48,10 +48,10 @@ function App() {
 
   return (
     <Box sx={{ 
-      height: '100vh', 
-      width: '100vw', 
+      height: '100%', 
+      width: '100%', 
       bgcolor: '#e8eaf6', 
-      overflow: 'auto',
+      overflow: 'hidden',
       background: 'linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%)'
     }}>
       <Container maxWidth={false} disableGutters sx={{ height: '100%', width: '100%' }}>

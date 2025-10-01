@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -592,32 +592,68 @@ const PermissionsGrid = ({
 
   // Memoize grid dimensions
   const gridDimensions = useMemo(() => {
-    const scrollbarWidth = getScrollbarWidth();
-    const gridWidth = permissionColWidth + groups.length * OTHER_COL_WIDTH + OTHER_COL_WIDTH + scrollbarWidth;
-    const gridHeight = Math.min(window.innerHeight - 220 - headerHeight, sortedPermissions.length * CELL_HEIGHT);
+    const contentWidth = permissionColWidth + groups.length * OTHER_COL_WIDTH + OTHER_COL_WIDTH;
+    const availableViewportHeight = window.innerHeight - 220 - headerHeight;
+    const clampedAvailable = Math.max(120, availableViewportHeight);
+    const gridHeight = Math.min(clampedAvailable, sortedPermissions.length * CELL_HEIGHT);
     const totalHeight = headerHeight + gridHeight;
-    return { gridWidth, gridHeight, totalHeight };
+    return { contentWidth, gridHeight, totalHeight };
   }, [permissionColWidth, groups.length, headerHeight, sortedPermissions.length]);
+
+  // Measure available viewport width for the grid (so Grid manages horizontal scroll)
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [viewportWidth, setViewportWidth] = useState<number>(
+    typeof window !== 'undefined' ? window.innerWidth : 800
+  );
+  const [containerHeight, setContainerHeight] = useState<number>(
+    typeof window !== 'undefined' ? window.innerHeight : 600
+  );
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const target = containerRef.current;
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width } = entry.contentRect;
+        setViewportWidth(width);
+        setContainerHeight(entry.contentRect.height);
+      }
+    });
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+
+  // Track grid scroll to support routing vertical wheel from wrapper
+  const gridRef = useRef<VirtualizedGrid | null>(null);
+  const lastScrollPosRef = useRef({ scrollLeft: 0, scrollTop: 0 });
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const handleGridScroll = useCallback((params: { scrollLeft: number; scrollTop: number }) => {
+    lastScrollPosRef.current = { scrollLeft: params.scrollLeft, scrollTop: params.scrollTop };
+    setScrollLeft(params.scrollLeft);
+  }, []);
 
   // Memoize the grid component with optimized settings
   const GridComponent = useMemo(() => (
     <VirtualizedGrid
+      ref={gridRef as any}
       columnCount={columnCount}
       columnWidth={getColumnWidth}
-      height={gridDimensions.gridHeight}
+      height={Math.max(80, containerHeight - headerHeight)}
       rowCount={sortedPermissions.length}
       rowHeight={CELL_HEIGHT}
-      width={gridDimensions.gridWidth}
+      width={Math.min(viewportWidth, gridDimensions.contentWidth)}
       cellRenderer={cellRenderer}
-      style={{ border: '1px solid #ccc', background: '#fff' }}
+      style={{ border: '1px solid #ccc', background: '#fff', boxSizing: 'border-box' }}
       overscanRowCount={10}
       overscanColumnCount={2}
       enableFixedColumnScroll
       enableFixedRowScroll
       hideTopRightGridScrollbar
       hideBottomLeftGridScrollbar
+      onScroll={handleGridScroll as any}
     />
-  ), [columnCount, getColumnWidth, gridDimensions, sortedPermissions.length, cellRenderer]);
+  ), [columnCount, getColumnWidth, gridDimensions, sortedPermissions.length, cellRenderer, handleGridScroll]);
 
   const handleImportFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -848,8 +884,8 @@ const PermissionsGrid = ({
     <Box sx={{ 
       display: 'flex', 
       flexDirection: 'column', 
-      height: '100vh', 
-      width: '100vw', 
+      height: '100%', 
+      width: '100%', 
       minHeight: 0,
       background: 'linear-gradient(to bottom right, #f0f8ff, #e6f2ff)',
       p: 2,
@@ -867,14 +903,22 @@ const PermissionsGrid = ({
         onAddGroup={handleAddGroup}
         onAddPermission={handleAddPermission}
       />
-      <div style={{ flex: 1, overflow: 'auto', position: 'relative' }}>
-        {renderHeaderRow()}
+      <div
+        ref={containerRef}
+        style={{ flex: 1, overflow: 'hidden', position: 'relative', width: '100%' }}
+      >
+        {/* Header synced horizontally with grid; no sticky to avoid extra offset */}
+        <div style={{ overflow: 'hidden', width: '100%' }}>
+          <div style={{ transform: `translateX(-${scrollLeft}px)` }}>
+            {renderHeaderRow()}
+          </div>
+        </div>
         {shouldRenderGrid && (
           <Box sx={{ 
             flex: 1, 
             minHeight: 0, 
             position: 'relative', 
-            overflow: gridDimensions.totalHeight > window.innerHeight - 220 ? 'auto' : 'hidden',
+            overflow: 'hidden',
             bgcolor: 'white',
             borderRadius: 1,
             boxShadow: '0 2px 10px rgba(0,0,0,0.08)'
