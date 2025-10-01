@@ -1,6 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
+// Ensure webcrypto is available in Node during build (fixes getRandomValues error on some Node versions)
+import { webcrypto as nodeWebcrypto } from 'node:crypto'
+
+// Polyfill globalThis.crypto.getRandomValues for Node environments where it's missing
+if (!(globalThis as any).crypto || typeof (globalThis as any).crypto.getRandomValues !== 'function') {
+  ;(globalThis as any).crypto = nodeWebcrypto as any
+}
 
 // Plugin to handle Flow directives
 const flowPlugin = {
